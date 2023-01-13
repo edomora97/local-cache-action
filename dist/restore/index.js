@@ -6651,41 +6651,34 @@ function saveEffectiveKey(key) {
 }
 function resolvePaths(patterns) {
     var _a, e_1, _b, _c;
-    var _d;
     return __awaiter(this, void 0, void 0, function* () {
         const paths = [];
-        const workspace = (_d = process.env["GITHUB_WORKSPACE"]) !== null && _d !== void 0 ? _d : process.cwd();
+        const cwd = process.cwd();
         const globber = yield glob.create(patterns.join("\n"), {
             implicitDescendants: false,
         });
         try {
-            for (var _e = true, _f = __asyncValues(globber.globGenerator()), _g; _g = yield _f.next(), _a = _g.done, !_a;) {
-                _c = _g.value;
-                _e = false;
+            for (var _d = true, _e = __asyncValues(globber.globGenerator()), _f; _f = yield _e.next(), _a = _f.done, !_a;) {
+                _c = _f.value;
+                _d = false;
                 try {
                     const file = _c;
-                    const relativeFile = path
-                        .relative(workspace, file)
-                        .replace(new RegExp(`\\${path.sep}`, "g"), "/");
-                    core.debug(`Matched: ${relativeFile}`);
-                    // Paths are made relative so the tar entries are all relative to the root of the workspace.
-                    if (relativeFile === "") {
-                        // path.relative returns empty string if workspace and file are equal
-                        paths.push(".");
+                    if (path.isAbsolute(file)) {
+                        paths.push(file);
                     }
                     else {
-                        paths.push(`${relativeFile}`);
+                        paths.push(path.join(cwd, file));
                     }
                 }
                 finally {
-                    _e = true;
+                    _d = true;
                 }
             }
         }
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
         finally {
             try {
-                if (!_e && !_a && (_b = _f.return)) yield _b.call(_f);
+                if (!_d && !_a && (_b = _e.return)) yield _b.call(_e);
             }
             finally { if (e_1) throw e_1.error; }
         }
@@ -6778,7 +6771,7 @@ function findCacheKey(prefix, cacheDir) {
 }
 function extractPackage(cachePath) {
     return restore_awaiter(this, void 0, void 0, function* () {
-        const args = ["-I", "zstd -T0", "-xf", cachePath];
+        const args = ["-I", "zstd -T0", "--directory=/", "-xf", cachePath];
         try {
             lib_core.debug(`Extracting the archive with 'tar ${args.join(" ")}'...`);
             const status = yield exec.exec("tar", args);

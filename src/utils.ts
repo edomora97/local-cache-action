@@ -29,22 +29,16 @@ export function saveEffectiveKey(key: string): void {
 
 export async function resolvePaths(patterns: string[]): Promise<string[]> {
   const paths: string[] = [];
-  const workspace = process.env["GITHUB_WORKSPACE"] ?? process.cwd();
+  const cwd = process.cwd();
   const globber = await glob.create(patterns.join("\n"), {
     implicitDescendants: false,
   });
 
   for await (const file of globber.globGenerator()) {
-    const relativeFile = path
-      .relative(workspace, file)
-      .replace(new RegExp(`\\${path.sep}`, "g"), "/");
-    core.debug(`Matched: ${relativeFile}`);
-    // Paths are made relative so the tar entries are all relative to the root of the workspace.
-    if (relativeFile === "") {
-      // path.relative returns empty string if workspace and file are equal
-      paths.push(".");
+    if (path.isAbsolute(file)) {
+      paths.push(file);
     } else {
-      paths.push(`${relativeFile}`);
+      paths.push(path.join(cwd, file));
     }
   }
 

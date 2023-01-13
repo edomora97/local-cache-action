@@ -7315,40 +7315,34 @@ function saveEffectiveKey(key) {
 }
 function resolvePaths(patterns) {
     var _a, e_1, _b, _c;
-    var _d;
     return __awaiter(this, void 0, void 0, function* () {
         const paths = [];
-        const workspace = (_d = process.env["GITHUB_WORKSPACE"]) !== null && _d !== void 0 ? _d : process.cwd();
+        const cwd = process.cwd();
         const globber = yield glob.create(patterns.join("\n"), {
             implicitDescendants: false,
         });
         try {
-            for (var _e = true, _f = __asyncValues(globber.globGenerator()), _g; _g = yield _f.next(), _a = _g.done, !_a;) {
-                _c = _g.value;
-                _e = false;
+            for (var _d = true, _e = __asyncValues(globber.globGenerator()), _f; _f = yield _e.next(), _a = _f.done, !_a;) {
+                _c = _f.value;
+                _d = false;
                 try {
                     const file = _c;
-                    const relativeFile = external_path_.relative(workspace, file)
-                        .replace(new RegExp(`\\${external_path_.sep}`, "g"), "/");
-                    lib_core.debug(`Matched: ${relativeFile}`);
-                    // Paths are made relative so the tar entries are all relative to the root of the workspace.
-                    if (relativeFile === "") {
-                        // path.relative returns empty string if workspace and file are equal
-                        paths.push(".");
+                    if (external_path_.isAbsolute(file)) {
+                        paths.push(file);
                     }
                     else {
-                        paths.push(`${relativeFile}`);
+                        paths.push(external_path_.join(cwd, file));
                     }
                 }
                 finally {
-                    _e = true;
+                    _d = true;
                 }
             }
         }
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
         finally {
             try {
-                if (!_e && !_a && (_b = _f.return)) yield _b.call(_f);
+                if (!_d && !_a && (_b = _e.return)) yield _b.call(_e);
             }
             finally { if (e_1) throw e_1.error; }
         }
@@ -7393,6 +7387,7 @@ function makePackage(globPatterns, key, cacheDir) {
         const args = [
             "-I",
             "zstd -T0",
+            "--directory=/",
             "-cf",
             tempPath,
             "--files-from",

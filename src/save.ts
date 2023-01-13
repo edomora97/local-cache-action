@@ -39,6 +39,7 @@ async function makePackage(
   const args = [
     "-I",
     "zstd -T0",
+    "--directory=/",
     "-cf",
     tempPath,
     "--files-from",

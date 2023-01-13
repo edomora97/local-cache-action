@@ -58,7 +58,7 @@ async function findCacheKey(
 }
 
 async function extractPackage(cachePath: string): Promise<void> {
-  const args = ["-I", "zstd -T0", "-xf", cachePath];
+  const args = ["-I", "zstd -T0", "--directory=/", "-xf", cachePath];
   try {
     core.debug(`Extracting the archive with 'tar ${args.join(" ")}'...`);
     const status = await exec.exec("tar", args);
