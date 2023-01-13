@@ -7297,6 +7297,7 @@ var __asyncValues = (undefined && undefined.__asyncValues) || function (o) {
 
 
 
+const CACHE_FILE_NAME = "cache.tar.zst";
 function getInputAsArray(name, options) {
     return lib_core.getInput(name, options)
         .split("\n")
@@ -7408,7 +7409,7 @@ function makePackage(globPatterns, key, cacheDir) {
             throw new Error(`Failed to create the archive with 'tar ${args.join(" ")}': ${error}`);
         }
         // Move to the final location.
-        const targetPath = external_path_.join(cachePath, "cache.tar.zst");
+        const targetPath = external_path_.join(cachePath, CACHE_FILE_NAME);
         lib_core.debug(`Moving ${tempPath} to ${targetPath}...`);
         yield (0,promises_namespaceObject.rename)(tempPath, targetPath);
         return targetPath;

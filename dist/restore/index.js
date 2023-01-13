@@ -6633,6 +6633,7 @@ var __asyncValues = (undefined && undefined.__asyncValues) || function (o) {
 
 
 
+const CACHE_FILE_NAME = "cache.tar.zst";
 function getInputAsArray(name, options) {
     return lib_core.getInput(name, options)
         .split("\n")
@@ -6717,7 +6718,7 @@ var restore_asyncValues = (undefined && undefined.__asyncValues) || function (o)
 
 
 function getCachePath(key, cacheDir) {
-    return external_path_default().join(cacheDir, key, "cache.tar.zst");
+    return external_path_default().join(cacheDir, key, CACHE_FILE_NAME);
 }
 function cacheExists(key, cacheDir) {
     return restore_awaiter(this, void 0, void 0, function* () {
@@ -6734,7 +6735,7 @@ function cacheExists(key, cacheDir) {
 function findCacheKey(prefix, cacheDir) {
     var _a, e_1, _b, _c;
     return restore_awaiter(this, void 0, void 0, function* () {
-        const paths = yield lib_glob.create(external_path_default().join(cacheDir, prefix + "*/cache.tar.zst"));
+        const paths = yield lib_glob.create(external_path_default().join(cacheDir, `${prefix}*/${CACHE_FILE_NAME}`));
         const foundPaths = [];
         try {
             for (var _d = true, _e = restore_asyncValues(paths.globGenerator()), _f; _f = yield _e.next(), _a = _f.done, !_a;) {
