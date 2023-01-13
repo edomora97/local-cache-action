@@ -24,7 +24,7 @@ async function findCacheKey(
   prefix: string,
   cacheDir: string
 ): Promise<string | null> {
-  const paths = await glob.create(path.join(cacheDir, prefix + "*"));
+  const paths = await glob.create(path.join(cacheDir, prefix + "*/"));
   const foundPaths = [];
   for await (const cachePath of paths.globGenerator()) {
     core.debug(`Found cache path: ${cachePath} matching prefix ${prefix}`);
