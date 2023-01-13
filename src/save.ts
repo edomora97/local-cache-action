@@ -74,6 +74,7 @@ async function save(): Promise<void> {
     // The key stored by the restore step is the same as the key provided by the
     // user: do not save.
     if (storedKey === key) {
+      core.info(`Key ${key} already exists, skipping save.`);
       return;
     }
 
