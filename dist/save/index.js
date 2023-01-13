@@ -7425,6 +7425,7 @@ function save() {
             // The key stored by the restore step is the same as the key provided by the
             // user: do not save.
             if (storedKey === key) {
+                lib_core.info(`Key ${key} already exists, skipping save.`);
                 return;
             }
             // Save the cache.

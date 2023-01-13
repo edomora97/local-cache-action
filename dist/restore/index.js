@@ -6734,19 +6734,18 @@ function cacheExists(key, cacheDir) {
 function findCacheKey(prefix, cacheDir) {
     var _a, e_1, _b, _c;
     return restore_awaiter(this, void 0, void 0, function* () {
-        const paths = yield lib_glob.create(external_path_default().join(cacheDir, prefix + "*"));
+        const paths = yield lib_glob.create(external_path_default().join(cacheDir, prefix + "*/cache.tar.zst"));
         const foundPaths = [];
         try {
             for (var _d = true, _e = restore_asyncValues(paths.globGenerator()), _f; _f = yield _e.next(), _a = _f.done, !_a;) {
                 _c = _f.value;
                 _d = false;
                 try {
-                    const cachePath = _c;
-                    lib_core.debug(`Found cache path: ${cachePath} matching prefix ${prefix}`);
-                    const cacheFilePath = external_path_default().join(cachePath, "cache.tar.zst");
+                    const cacheFilePath = _c;
+                    lib_core.debug(`Found cache path: ${cacheFilePath} matching prefix ${prefix}`);
                     try {
                         const info = yield (0,promises_namespaceObject.stat)(cacheFilePath);
-                        const key = external_path_default().basename(cachePath);
+                        const key = external_path_default().basename(external_path_default().dirname(cacheFilePath));
                         const mtime = info.mtime.toISOString();
                         lib_core.debug(`Found cache key: ${key} with mtime: ${mtime} for prefix ${prefix}`);
                         foundPaths.push([mtime, key]);
@@ -6771,7 +6770,9 @@ function findCacheKey(prefix, cacheDir) {
         if (foundPaths.length === 0)
             return null;
         foundPaths.sort((a, b) => a[0].localeCompare(b[0]));
-        return foundPaths[foundPaths.length - 1][1];
+        const key = foundPaths[foundPaths.length - 1][1];
+        lib_core.debug(`Selecting cache key: ${key}`);
+        return key;
     });
 }
 function extractPackage(cachePath) {
