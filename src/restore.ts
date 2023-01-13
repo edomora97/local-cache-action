@@ -24,14 +24,15 @@ async function findCacheKey(
   prefix: string,
   cacheDir: string
 ): Promise<string | null> {
-  const paths = await glob.create(path.join(cacheDir, prefix + "*/"));
+  const paths = await glob.create(
+    path.join(cacheDir, prefix + "*/cache.tar.zst")
+  );
   const foundPaths = [];
-  for await (const cachePath of paths.globGenerator()) {
-    core.debug(`Found cache path: ${cachePath} matching prefix ${prefix}`);
-    const cacheFilePath = path.join(cachePath, "cache.tar.zst");
+  for await (const cacheFilePath of paths.globGenerator()) {
+    core.debug(`Found cache path: ${cacheFilePath} matching prefix ${prefix}`);
     try {
       const info = await stat(cacheFilePath);
-      const key = path.basename(cachePath);
+      const key = path.basename(path.dirname(cacheFilePath));
       const mtime = info.mtime.toISOString();
       core.debug(
         `Found cache key: ${key} with mtime: ${mtime} for prefix ${prefix}`
@@ -46,7 +47,9 @@ async function findCacheKey(
   if (foundPaths.length === 0) return null;
 
   foundPaths.sort((a, b) => a[0].localeCompare(b[0]));
-  return foundPaths[foundPaths.length - 1][1];
+  const key = foundPaths[foundPaths.length - 1][1];
+  core.debug(`Selecting cache key: ${key}`);
+  return key;
 }
 
 async function extractPackage(cachePath: string): Promise<void> {
