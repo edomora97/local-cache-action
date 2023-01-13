@@ -2,7 +2,7 @@
   "name": "local-cache-action",
   "version": "0.0.0",
   "private": true,
-  "description": "Local Cache Action",
+  "description": "Like actions/cache, but using a runner-local directory",
   "main": "lib/main.js",
   "scripts": {
     "format": "prettier --write '**/*.ts'",
