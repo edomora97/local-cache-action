@@ -1,5 +1,5 @@
 name: "Local Cache"
-description: "Local Cache"
+description: "Like actions/cache, but using a runner-local directory"
 inputs:
   path:
     description: "A list of files, directories, and wildcard patterns to cache and restore"
