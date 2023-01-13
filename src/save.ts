@@ -4,6 +4,7 @@ import * as path from "path";
 import { v4 as uuidv4 } from "uuid";
 import { rename, writeFile, mkdir } from "fs/promises";
 import {
+  CACHE_FILE_NAME,
   getInputAsArray,
   getStoredKey,
   resolvePaths,
@@ -56,7 +57,7 @@ async function makePackage(
   }
 
   // Move to the final location.
-  const targetPath = path.join(cachePath, "cache.tar.zst");
+  const targetPath = path.join(cachePath, CACHE_FILE_NAME);
   core.debug(`Moving ${tempPath} to ${targetPath}...`);
   await rename(tempPath, targetPath);
 

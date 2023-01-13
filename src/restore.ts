@@ -4,10 +4,15 @@ import * as exec from "@actions/exec";
 import path from "path";
 import { constants } from "fs";
 import { access, stat } from "fs/promises";
-import { getInputAsArray, sanitizeKey, saveEffectiveKey } from "./utils";
+import {
+  CACHE_FILE_NAME,
+  getInputAsArray,
+  sanitizeKey,
+  saveEffectiveKey,
+} from "./utils";
 
 function getCachePath(key: string, cacheDir: string): string {
-  return path.join(cacheDir, key, "cache.tar.zst");
+  return path.join(cacheDir, key, CACHE_FILE_NAME);
 }
 
 async function cacheExists(key: string, cacheDir: string): Promise<boolean> {
@@ -25,7 +30,7 @@ async function findCacheKey(
   cacheDir: string
 ): Promise<string | null> {
   const paths = await glob.create(
-    path.join(cacheDir, prefix + "*/cache.tar.zst")
+    path.join(cacheDir, `${prefix}*/${CACHE_FILE_NAME}`)
   );
   const foundPaths = [];
   for await (const cacheFilePath of paths.globGenerator()) {

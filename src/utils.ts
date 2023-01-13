@@ -2,6 +2,8 @@ import * as core from "@actions/core";
 import * as glob from "@actions/glob";
 import * as path from "path";
 
+export const CACHE_FILE_NAME = "cache.tar.zst";
+
 export function getInputAsArray(
   name: string,
   options?: core.InputOptions
